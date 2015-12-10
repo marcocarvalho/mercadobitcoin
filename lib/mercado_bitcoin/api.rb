@@ -1,0 +1,2 @@
+module MercadoBitcoin::Api
+end
