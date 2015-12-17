@@ -36,7 +36,7 @@ module MercadoBitcoin
 
     def parse(body)
       JSON.parse(body)
-    rescue JSON::ParseError
+    rescue JSON::ParserError
       raise MercadoBitcoin::TickerError.new("#{url} responded an invalid json data")
     end
   end

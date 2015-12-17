@@ -17,8 +17,16 @@ RSpec.describe MercadoBitcoin::Ticker, type: :service do
     }
   end
 
+  let(:invalid) { '<HTML!>...</HTML>' }
+
   context 'bitcoin' do
     let(:kind) { :bitcoin }
+
+    it '#invalid' do
+      expect(subject).to receive(:get).with('https://www.mercadobitcoin.net/api/ticker').once.and_return(invalid)    
+      expect { subject.fetch }.to raise_error('https://www.mercadobitcoin.net/api/ticker responded an invalid json data')
+    end
+
     it '#fetch' do
       expect(subject).to receive(:get).with('https://www.mercadobitcoin.net/api/ticker').once.and_return(valid.to_json)
       expect(subject.fetch.to_hash).to eq({

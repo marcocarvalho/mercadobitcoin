@@ -2,6 +2,7 @@ require 'mercado_bitcoin/version'
 require 'virtus'
 require 'virtus/timestamp'
 require 'rest-client'
+require 'json'
 
 module MercadoBitcoin
   require 'mercado_bitcoin/errors'
