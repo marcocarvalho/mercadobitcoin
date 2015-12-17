@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe MercadoBitcoin::Api::Data::Ticker, type: :model do
   subject { described_class.new(params) }
 
-  let(:time) { Time.new }
+  let(:time) { Time.at(Time.new.to_i) }
 
   context 'symbol hash' do
     let(:params) do
@@ -16,6 +16,30 @@ RSpec.describe MercadoBitcoin::Api::Data::Ticker, type: :model do
         sell: '5.5',
         date: time.to_i
       }
+    end
+
+    it 'to_hash' do
+      expect(subject.to_hash).to eq({
+        high: 12.2,
+        low: 11.1,
+        vol: 10.1,
+        last: 1.0,
+        buy: 4.0,
+        sell: 5.5,
+        date: time
+      })
+    end
+
+    it 'to_json' do
+      expect(subject.to_json).to eq({
+        high: 12.2,
+        low: 11.1,
+        vol: 10.1,
+        last: 1.0,
+        buy: 4.0,
+        sell: 5.5,
+        date: time
+      }.to_json)
     end
 
     it '#high' do

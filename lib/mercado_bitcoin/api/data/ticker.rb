@@ -8,4 +8,20 @@ class MercadoBitcoin::Api::Data::Ticker
   attribute :buy, Float  
   attribute :sell, Float  
   attribute :date, Timestamp
+
+  def to_hash
+    {
+      high: high,
+      low: low,
+      vol: vol,
+      last: last,
+      buy: buy,
+      sell: sell,
+      date: date
+    }
+  end
+
+  def to_json
+    to_hash.to_json
+  end
 end
