@@ -27,7 +27,7 @@ module MercadoBitcoin
     end
 
     def base_url
-      raise NotImplementedError.new
+      @base_url ||= "https://www.mercadobitcoin.net/api".freeze
     end
 
     def bitcoin?

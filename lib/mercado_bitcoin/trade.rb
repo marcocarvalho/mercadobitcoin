@@ -31,10 +31,6 @@ module MercadoBitcoin
       { tid: tid }
     end
 
-    def base_url
-      @base_url ||= "https://www.mercadobitcoin.net/api".freeze
-    end
-
     def model
       Array
     end

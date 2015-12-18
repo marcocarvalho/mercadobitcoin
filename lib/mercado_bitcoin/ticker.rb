@@ -10,10 +10,6 @@ module MercadoBitcoin
       @action ||= bitcoin? ? 'ticker' : 'ticker_litecoin'
     end
 
-    def base_url
-      @base_url ||= "https://www.mercadobitcoin.net/api".freeze
-    end
-
     def model
       MercadoBitcoin::Api::Data::Ticker
     end
