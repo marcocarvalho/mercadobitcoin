@@ -6,8 +6,8 @@ require 'json'
 
 module MercadoBitcoin
   require 'mercado_bitcoin/errors'
-  require 'mercado_bitcoin/api'
-  require 'mercado_bitcoin/base_api_call'
-  require 'mercado_bitcoin/ticker'
-  require 'mercado_bitcoin/trade'
+  autoload :Api,         'mercado_bitcoin/api'
+  autoload :BaseApiCall, 'mercado_bitcoin/base_api_call'
+  autoload :Ticker,      'mercado_bitcoin/ticker'
+  autoload :Trade,       'mercado_bitcoin/trade'
 end
