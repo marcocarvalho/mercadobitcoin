@@ -5,6 +5,8 @@ class Timestamp < Virtus::Attribute
       Time.at(value)
     when Time
       value
+    when NilClass
+      value
     else
       raise ArgumentError.new("#{value.class} cannot be coerced to Time")
     end

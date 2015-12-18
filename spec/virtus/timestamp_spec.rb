@@ -29,4 +29,11 @@ RSpec.describe SomeObject, type: :class do
       expect { subject.time }.to raise_error('String cannot be coerced to Time')
     end
   end
+
+  context 'nil should be ignored' do
+    let(:value) { nil }
+    it 'should be nil' do
+      expect(subject.time).to eq(nil)
+    end
+  end
 end
