@@ -15,7 +15,7 @@ module MercadoBitcoin
 
     def fetch
       parsed = parse(get(url))
-      model.new(parsed['ticker'])
+      model.new(parsed)
     end
 
     def model

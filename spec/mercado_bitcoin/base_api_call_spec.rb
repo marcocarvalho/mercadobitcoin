@@ -75,4 +75,11 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
       expect(subject.url).to eq('http://somewhere.com')
     end
   end
+
+  it '#get' do
+    url = 'http://url.to'
+    allow(subject).to receive(:url).and_return(url)
+    expect(subject).to receive_message_chain(:rest_client, :get).with(url).and_return(:response)
+    expect(subject.get(url)).to eq(:response)
+  end
 end
