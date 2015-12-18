@@ -1,4 +1,4 @@
 module MercadoBitcoin
   class Error < StandardError; end
-  class TickerError < Error; end
+  class ParserError < Error; end
 end
