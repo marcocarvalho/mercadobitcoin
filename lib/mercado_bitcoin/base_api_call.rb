@@ -23,7 +23,7 @@ module MercadoBitcoin
     end
 
     def action
-      raise NotImplementedError.new
+      ''
     end
 
     def base_url
@@ -44,7 +44,8 @@ module MercadoBitcoin
 
     def url
       return @url if @url
-      @url = URI.parse(base_url)
+      ac = action.is_a?(String) && action != '' ? File.join(base_url, action) : base_url
+      @url = URI.parse(ac)
       @url.query = URI.encode_www_form(params) if !params.nil? && !params.empty?
       @url = @url.to_s
     end

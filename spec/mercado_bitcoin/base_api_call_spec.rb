@@ -24,10 +24,6 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
       expect { subject.model }.to raise_error(NotImplementedError)
     end
 
-    it '#action' do
-      expect { subject.action }.to raise_error(NotImplementedError)
-    end
-
     it '#base_url' do
       expect { subject.base_url }.to raise_error(NotImplementedError)
     end
@@ -70,6 +66,12 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
   end
 
   context '#url' do
+    it 'return base_url + action' do
+      allow(subject).to receive(:base_url).and_return('http://somewhere.com')
+      allow(subject).to receive(:action).and_return('some')
+      expect(subject.url).to eq('http://somewhere.com/some')
+    end
+
     it 'return base_url' do
       allow(subject).to receive(:base_url).and_return('http://somewhere.com')
       expect(subject.url).to eq('http://somewhere.com')
