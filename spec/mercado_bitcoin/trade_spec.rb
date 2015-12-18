@@ -28,4 +28,14 @@ RSpec.describe MercadoBitcoin::Trade, type: :service do
       type: 'sell'
     })
   end
+
+  context 'litecoin' do
+    let(:coin) { :litecoin }
+
+    it '#fetch' do
+      allow(subject).to receive(:get).with('https://www.mercadobitcoin.net/api/trades_litecoin').and_return(valid_json)
+      ret = subject.fetch
+      expect(ret.count).to eq(2)
+    end
+  end
 end
