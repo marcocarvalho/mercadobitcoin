@@ -38,8 +38,15 @@ module MercadoBitcoin
       coin == :litecoin
     end
 
+    def params
+      {}
+    end
+
     def url
-      @url ||= "https://www.mercadobitcoin.net/api/#{action}?#{params}"
+      return @url if @url
+      @url = URI.parse(base_url)
+      @url.query = URI.encode_www_form(params) if !params.nil? && !params.empty?
+      @url = @url.to_s
     end
 
     attr_reader :response

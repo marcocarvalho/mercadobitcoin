@@ -68,4 +68,11 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
       it { expect { subject }.to raise_error("bitcoin or litecoin expected #{coin} received") }
     end
   end
+
+  context '#url' do
+    it 'return base_url' do
+      allow(subject).to receive(:base_url).and_return('http://somewhere.com')
+      expect(subject.url).to eq('http://somewhere.com')
+    end
+  end
 end
