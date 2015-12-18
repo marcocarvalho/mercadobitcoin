@@ -38,4 +38,22 @@ RSpec.describe MercadoBitcoin::Trade, type: :service do
       expect(ret.count).to eq(2)
     end
   end
+
+  context 'tid' do
+    let(:params) { { tid: 123 } }
+
+    it '#fetch' do
+      expect(subject).to receive(:get).with('https://www.mercadobitcoin.net/api/trades?tid=123').and_return(valid_json)
+      expect(subject.fetch.count).to eq(2)
+    end
+  end
+
+  context 'since' do
+    let(:params) { { since: 123 } }
+
+    it '#fetch' do
+      expect(subject).to receive(:get).with('https://www.mercadobitcoin.net/api/trades?tid=123').and_return(valid_json)
+      expect(subject.fetch.count).to eq(2)
+    end
+  end
 end
