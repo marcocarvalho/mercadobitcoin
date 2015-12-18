@@ -82,4 +82,15 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
     expect(subject).to receive_message_chain(:rest_client, :get).with(url).and_return(:response)
     expect(subject.get(url)).to eq(:response)
   end
+
+  context '#parse' do
+    it 'valid' do
+      expect(subject.parse({ a:1 }.to_json)).to eq('a' => 1)
+    end
+
+    it 'invalid' do
+      allow(subject).to receive(:url).and_return('some url')
+      expect { subject.parse('') }.to raise_error(MercadoBitcoin::ParserError)
+    end
+  end
 end
