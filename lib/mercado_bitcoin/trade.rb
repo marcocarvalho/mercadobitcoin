@@ -19,11 +19,11 @@ module MercadoBitcoin
 
     def action
       return @action if @action
+      @action = bitcoin? ? 'trades' : 'trades_litecoin'
       if(from_to)
-        @action = File.join('trades', from_to)
-      else
-        @action = 'trades'.freeze
+        @action = File.join(@action, from_to).freeze
       end
+      @action
     end
 
     def params
