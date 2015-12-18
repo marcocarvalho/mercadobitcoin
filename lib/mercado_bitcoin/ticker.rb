@@ -1,43 +1,31 @@
 module MercadoBitcoin
-    class Ticker
-    attr_accessor :kind
-    def initialize(kind = :bitcoin)
-      @kind = kind.to_sym
-    end
+  class Ticker < BaseApiCall
 
-    def fetch
-      parsed = parse(get(url))
-      MercadoBitcoin::Api::Data::Ticker.new(parsed['ticker'])
-    end
-
-    private
-
-    def bitcoin?
-      kind == :bitcoin 
-    end
-
-    def lite_coin?
-      kind == :litecoin
+    def initialize(coin, opts = {})
+      opts[:parser] = TickerParser
+      super(coin, opts)
     end
 
     def action
       @action ||= bitcoin? ? 'ticker' : 'ticker_litecoin'
     end
 
-    def url
-      @url ||= "https://www.mercadobitcoin.net/api/#{action}"
+    def base_url
+      @base_url ||= "https://www.mercadobitcoin.net/api".freeze
     end
 
-    attr_reader :response
-
-    def get(url)
-      @response = RestClient.get(url)
+    def model
+      MercadoBitcoin::Api::Data::Ticker
     end
 
-    def parse(body)
-      JSON.parse(body)
-    rescue JSON::ParserError
-      raise MercadoBitcoin::ParserError.new("#{url} responded an invalid json data")
+    class TickerParser
+      def self.parse(body)
+        new.parse(body)
+      end
+
+      def parse(body)
+        JSON.parse(body)['ticker']
+      end
     end
   end
 end
