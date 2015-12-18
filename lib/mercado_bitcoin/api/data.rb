@@ -3,4 +3,5 @@ module MercadoBitcoin::Api::Data
   autoload :Trade,  'mercado_bitcoin/api/data/trade'
   autoload :AskBid, 'mercado_bitcoin/api/data/ask_bid'
   autoload :OrderBook, 'mercado_bitcoin/api/data/order_book'
+  autoload :AskBidRefinement, 'mercado_bitcoin/api/data/ask_bid_refinement'
 end

@@ -1,4 +1,6 @@
 class MercadoBitcoin::Api::Data::OrderBook
+  using MercadoBitcoin::Api::Data::AskBidRefinement
+
   attr_reader :asks, :bids
 
   def initialize(opts = {})
@@ -8,12 +10,12 @@ class MercadoBitcoin::Api::Data::OrderBook
 
   def asks=(v)
     v ||= []
-    @asks = v.map { |i| MercadoBitcoin::Api::Data::AskBid.new(i) }
+    @asks = v.map { |i| MercadoBitcoin::Api::Data::AskBid.new(i.to_model_hash) }
   end
 
   def bids=(v)
     v ||= []
-    @bids = v.map { |i| MercadoBitcoin::Api::Data::AskBid.new(i) }
+    @bids = v.map { |i| MercadoBitcoin::Api::Data::AskBid.new(i.to_model_hash) }
   end
 
   def to_hash
