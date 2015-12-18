@@ -3,8 +3,8 @@ module MercadoBitcoin
     attr_accessor :tid, :from, :to
     def initialize(coin, opts = {})
       @tid  = opts[:tid] || opts[:since]
-      @from = opts[:from]
-      @to   = opts[:to]
+      @from = opts[:from].to_i.to_s if opts[:from].is_a?(Time)
+      @to   = opts[:to].to_i.to_s   if opts[:to].is_a?(Time)
       super(coin, opts)
     end
 

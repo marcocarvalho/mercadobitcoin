@@ -56,4 +56,22 @@ RSpec.describe MercadoBitcoin::Trade, type: :service do
       expect(subject.fetch.count).to eq(2)
     end
   end
+
+  context '#from' do
+    let(:params) { { from: Time.new(2015, 12, 1) } }
+
+    it '#fetch' do
+      expect(subject).to receive(:get).with("https://www.mercadobitcoin.net/api/trades/#{Time.new(2015, 12, 1).to_i}").and_return(valid_json)
+      expect(subject.fetch.count).to eq(2)
+    end
+  end
+
+  context '#from #to' do
+    let(:params) { { from: Time.new(2015, 12, 1), to: Time.new(2015, 12, 10) } }
+
+    it '#fetch' do
+      expect(subject).to receive(:get).with("https://www.mercadobitcoin.net/api/trades/#{Time.new(2015, 12, 1).to_i}/#{Time.new(2015, 12, 10).to_i}").and_return(valid_json)
+      expect(subject.fetch.count).to eq(2)
+    end
+  end
 end
