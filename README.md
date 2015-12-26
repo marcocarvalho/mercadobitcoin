@@ -20,7 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: missing documentation.
+TODO: 
+ - write documentation.
+ - make a CI
 
 ## Contributing
 
