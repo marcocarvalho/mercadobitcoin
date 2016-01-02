@@ -23,10 +23,6 @@ RSpec.describe MercadoBitcoin::BaseApiCall, type: :service do
     it '#model' do
       expect { subject.model }.to raise_error(NotImplementedError)
     end
-
-    it '#base_url' do
-      expect { subject.base_url }.to raise_error(NotImplementedError)
-    end
   end
 
   context '#coin' do
