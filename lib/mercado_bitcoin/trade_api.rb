@@ -41,7 +41,14 @@ module MercadoBitcoin
     end
 
     def post(params)
-      RestClient.post(base_url, params.to_query_string, header(sign(params)))
+      signature = sign(params)
+      JSON.parse(
+        RestClient.post(
+          base_url,
+          params.to_query_string,
+          header(signature)
+        )
+      )
     end
 
     def base_url
