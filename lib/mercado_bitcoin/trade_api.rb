@@ -49,15 +49,30 @@ module MercadoBitcoin
     end
 
     def post(params)
+      params[:tonce] = Time.new.to_i + env_or_var_tonce
       signature = sign(params)
-      JSON.parse(
+      result = JSON.parse(
         RestClient.post(
           base_url,
           params.to_query_string,
           header(signature)
         )
       )
+      raise TonceDesyncError.new('desync') if tonce_error?(result)
+      result 
+    rescue TonceDesyncError
+      @tonce_correction = get_tonce_correction(result)
+      retry
     end
+
+    def tonce_error?(result)
+      if result['error'].to_s =~ /(\d+) e (\d+), tonce recebido (\d+)+/
+        $1.to_i - $3.to_i + 10
+      else
+        false
+      end
+    end
+    alias_method :get_tonce_correction, :tonce_error?
 
     def base_url
       @base_url ||= "https://www.mercadobitcoin.net/tapi/".freeze
@@ -73,9 +88,16 @@ module MercadoBitcoin
 
     def base_params(method)
       {
-        method: method,
-        tonce: Time.new.to_i + (ENV['TONCE_CORRECTION'] || tonce_correction).to_i
+        method: method
       }
+    end
+
+    def env_or_var_tonce
+      if ENV['TONCE_CORRECTION'].to_s =~ /\d+/
+        ENV['TONCE_CORRECTION'].to_i
+      else
+        tonce_correction
+      end
     end
 
     def sign(string_or_hash)
