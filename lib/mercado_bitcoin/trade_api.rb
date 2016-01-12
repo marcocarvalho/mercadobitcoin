@@ -4,11 +4,12 @@ module MercadoBitcoin
   class TradeApi
     using QueryStringRefinement
 
-    attr_accessor :key, :code
+    attr_accessor :key, :code, :tonce_correction
 
-    def initialize(key:, code:)
+    def initialize(key:, code:, tonce_correction: 0)
       @key = key
       @code = code
+      @tonce_correction = tonce_correction
     end
 
     def get_info
@@ -73,7 +74,7 @@ module MercadoBitcoin
     def base_params(method)
       {
         method: method,
-        tonce: Time.new.to_i + (ENV['TONCE_CORRECTION'].to_i)
+        tonce: Time.new.to_i + (ENV['TONCE_CORRECTION'] || tonce_correction).to_i
       }
     end
 
