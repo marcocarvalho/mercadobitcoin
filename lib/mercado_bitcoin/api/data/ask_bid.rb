@@ -6,8 +6,8 @@ class MercadoBitcoin::Api::Data::AskBid
 
   def to_hash
     {
-      price: price,
-      volume: volume
+      price: price.to_f,
+      volume: volume.to_f
     }
   end
 

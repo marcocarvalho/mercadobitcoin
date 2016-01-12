@@ -26,6 +26,13 @@ module MercadoBitcoin
       post(params)
     end
 
+    def cancel_order(pair: 'btc_brl', order_id:)
+      params = base_params('CancelOrder')
+      params[:pair] = pair
+      params[:order_id] = order_id
+      post(params)
+    end
+
     # status: active, canceled, completed
     # since and end: in Unix timestamp: Time.new.to_i
     def order_list(pair: 'btc_brl', type: nil, status: nil, from_id: nil, end_id: nil, since: nil, _end: nil)
