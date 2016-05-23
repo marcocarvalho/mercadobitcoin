@@ -1,6 +1,6 @@
-# MercadoBitcoin
+# MercadoBitcoin [![Build Status](https://travis-ci.org/marcocarvalho/mercadobitcoin.png?branch=master)](https://travis-ci.org/marcocarvalho/mercadobitcoin)
 
-Thin layer to MercadoBitcoin.com.br public price api layer.
+Thin layer to [MercadoBitcoin.com.br](http://mercadobitcoin.com.br/) public price api layer.
 
 ## Installation
 
@@ -20,9 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: 
+TODO:
  - write documentation.
- - make a CI
+ - ~~make a CI~~
 
 ## Contributing
 

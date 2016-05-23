@@ -15,12 +15,12 @@ RSpec.describe SomeObject, type: :class do
 
   context 'coerce fixnum' do
     let(:value) { 1449708736 }
-    it_behaves_like 'a timestamp attribute', Time.parse('2015-12-10 00:52:16') 
+    it_behaves_like 'a timestamp attribute', Time.parse('2015-12-10 00:52:16 UTC')
   end
 
   context 'accept time' do
     let(:value) { Time.new(2015, 12, 15) }
-    it_behaves_like 'a timestamp attribute', Time.new(2015, 12, 15) 
+    it_behaves_like 'a timestamp attribute', Time.new(2015, 12, 15)
   end
 
   context 'invalid value' do
