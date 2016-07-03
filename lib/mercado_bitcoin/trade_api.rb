@@ -26,7 +26,8 @@ module MercadoBitcoin
 
     def get_order(pair: BTC, order_id:)
       params = base_params('get_order')
-      params[:order_id] = order_id
+      params[:order_id]  = order_id
+      params[:coin_pair] = pair
       post(params)
     end
 

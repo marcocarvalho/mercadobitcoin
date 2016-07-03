@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'pry'
 require 'bundler'
 require 'json'
 Bundler.setup
 
+require 'byebug'
+require 'pry'
 require 'dotenv'
 Dotenv.load
 
@@ -88,6 +89,18 @@ class MercadoBitcoin::Console
     trade_api.get_account_info
   end
 
+  def get_order(*args)
+    raise ArgumentError.new("faltando ORDER_ID") if args.count < 1
+    ret = args.map do |id|
+      trade_api.get_order(order_id: id)
+    end
+    if ret.size > 1
+      ret
+    else
+      ret[0]
+    end
+  end
+
   private
 
   def print(value)
@@ -112,4 +125,10 @@ end
 
 command = ARGV.shift
 
-MercadoBitcoin::Console.new(options).exec(command, ARGV)
+begin
+  MercadoBitcoin::Console.new(options).exec(command, ARGV)
+rescue ArgumentError => e
+  puts "\n\nFaltando argumentos para o comando #{command}\n\n"
+  puts opt_parser
+  exit(-2)
+end
