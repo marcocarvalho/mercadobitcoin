@@ -2,19 +2,31 @@ require 'openssl'
 
 module MercadoBitcoin
   class TradeApi
+    BTC = 'BRLBTC'
+    LTC = 'BRLLTC'
+
     using QueryStringRefinement
 
-    attr_accessor :key, :code, :tonce_correction
+    attr_accessor :key, :code
 
-    def initialize(key:, code:, tonce_correction: 0)
+    def initialize(key:, code:)
       @key = key
       @code = code
-      @tonce_correction = tonce_correction
     end
 
-    # V3
     def get_account_info
       params = base_params('get_account_info')
+      post(params)
+    end
+
+    def list_system_messages
+      params = base_params('list_system_messages')
+      post(params)
+    end
+
+    def get_order(pair: BTC, order_id:)
+      params = base_params('get_order')
+      params[:order_id] = order_id
       post(params)
     end
 
@@ -50,7 +62,7 @@ module MercadoBitcoin
     end
 
     def post(params)
-      params[:tapi_nonce] = Time.new.to_i + env_or_var_tonce
+      params[:tapi_nonce] = Time.new.to_i
       signature = sign(params)
       result = JSON.parse(
         RestClient.post(
@@ -59,21 +71,7 @@ module MercadoBitcoin
           header(signature)
         )
       )
-      raise TonceDesyncError.new('desync') if tonce_error?(result)
-      result
-    rescue TonceDesyncError
-      @tonce_correction = get_tonce_correction(result)
-      retry
     end
-
-    def tonce_error?(result)
-      if result['error'].to_s =~ /(\d+) e (\d+), tonce recebido (\d+)+/
-        $1.to_i - $3.to_i + 10
-      else
-        false
-      end
-    end
-    alias_method :get_tonce_correction, :tonce_error?
 
     def base_path
       @base_path ||= "/tapi/v3/".freeze
@@ -97,18 +95,9 @@ module MercadoBitcoin
       }
     end
 
-    def env_or_var_tonce
-      if ENV['TONCE_CORRECTION'].to_s =~ /\d+/
-        ENV['TONCE_CORRECTION'].to_i
-      else
-        tonce_correction
-      end
-    end
-
     def sign(string_or_hash, path = nil)
       path ||= base_path
       string_or_hash = path + '?' + string_or_hash.to_query_string if string_or_hash.is_a?(Hash)
-      puts string_or_hash
       hmac = OpenSSL::HMAC.new(code, OpenSSL::Digest.new('sha512'))
       hmac.update(string_or_hash).to_s
     end

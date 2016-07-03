@@ -19,7 +19,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'virtus', '~> 1.0'
   spec.add_dependency 'rest-client', '~> 2.0'
+  spec.add_dependency 'dotenv', '~> 2.1'
   spec.add_development_dependency "bundler", "~> 1.10"
+  spec.add_development_dependency "pry", "~> 0.10"
   spec.add_development_dependency "byebug", "~> 9.0"
   spec.add_development_dependency "rake", "~> 11.2"
   spec.add_development_dependency "rspec", "~> 3.4"
