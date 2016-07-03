@@ -1,0 +1,8 @@
+mercadobitcoin:
+  build: .
+  command: bash
+  stdin_open: true
+  tty: true
+  volumes:
+    - .:/app
+    - $SSH_AUTH_SOCK:/tmp/agent.sock
