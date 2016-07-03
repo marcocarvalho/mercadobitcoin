@@ -12,8 +12,9 @@ module MercadoBitcoin
       @tonce_correction = tonce_correction
     end
 
-    def get_info
-      params = base_params('getInfo')
+    # V3
+    def get_account_info
+      params = base_params('get_account_info')
       post(params)
     end
 
@@ -40,16 +41,16 @@ module MercadoBitcoin
       params = base_params('OrderList')
       params[:pair] = pair
       params[:type] = type if type
-      params[:status] = status if status 
-      params[:from_id] = from_id if from_id 
-      params[:end_id] = end_id if end_id 
-      params[:since] = since if since 
+      params[:status] = status if status
+      params[:from_id] = from_id if from_id
+      params[:end_id] = end_id if end_id
+      params[:since] = since if since
       params[:end] = _end if _end
-      post(params) 
+      post(params)
     end
 
     def post(params)
-      params[:tonce] = Time.new.to_i + env_or_var_tonce
+      params[:tapi_nonce] = Time.new.to_i + env_or_var_tonce
       signature = sign(params)
       result = JSON.parse(
         RestClient.post(
@@ -59,7 +60,7 @@ module MercadoBitcoin
         )
       )
       raise TonceDesyncError.new('desync') if tonce_error?(result)
-      result 
+      result
     rescue TonceDesyncError
       @tonce_correction = get_tonce_correction(result)
       retry
@@ -74,21 +75,25 @@ module MercadoBitcoin
     end
     alias_method :get_tonce_correction, :tonce_error?
 
+    def base_path
+      @base_path ||= "/tapi/v3/".freeze
+    end
+
     def base_url
-      @base_url ||= "https://www.mercadobitcoin.net/tapi/".freeze
+      @base_url ||= "https://www.mercadobitcoin.net#{base_path}".freeze
     end
 
     def header(signature)
       {
         'Content-Type' => 'application/x-www-form-urlencoded',
-        'Key' => key,
-        'Sign' => signature
+        'TAPI-ID' => key,
+        'TAPI-MAC' => signature
       }
     end
 
     def base_params(method)
       {
-        method: method
+        tapi_method: method
       }
     end
 
@@ -100,8 +105,10 @@ module MercadoBitcoin
       end
     end
 
-    def sign(string_or_hash)
-      string_or_hash = string_or_hash.to_query_string if string_or_hash.is_a?(Hash)
+    def sign(string_or_hash, path = nil)
+      path ||= base_path
+      string_or_hash = path + '?' + string_or_hash.to_query_string if string_or_hash.is_a?(Hash)
+      puts string_or_hash
       hmac = OpenSSL::HMAC.new(code, OpenSSL::Digest.new('sha512'))
       hmac.update(string_or_hash).to_s
     end

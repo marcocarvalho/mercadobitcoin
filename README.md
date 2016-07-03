@@ -22,8 +22,15 @@ Or install it yourself as:
 
 TODO:
  - write documentation.
- - ~~make a CI~~
+ - V3 protocol implementation
 
+### Trade Api (v3)
+
+####
+```
+  mb = MercadoBitcoin::TradeApi.new(key: '<key>', code: '<secret>')
+  mb.get_account_info
+```
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/marcocarvalho/mercado_bitcoin. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
