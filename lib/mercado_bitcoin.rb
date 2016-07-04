@@ -6,6 +6,7 @@ require 'json'
 
 module MercadoBitcoin
   require 'mercado_bitcoin/errors'
+  autoload :Console,     'mercado_bitcoin/console'
   autoload :Api,         'mercado_bitcoin/api'
   autoload :TradeApi,    'mercado_bitcoin/trade_api'
   autoload :QueryStringRefinement, 'mercado_bitcoin/query_string_refinement'
