@@ -10,6 +10,6 @@ RSpec.describe MercadoBitcoin::TradeApi, type: :service do
   end
 
   it 'sign a hash' do
-    expect(subject.sign({a: 2, b: 'asdasda'})).to eq("1d5e6a564d5b7f260cd094b56bab0c2bd5d8c3766ea61d40b62077fa1227a0f3f2d6ad28a936cb680b6e1561d96a1b11e2dfb67fab412b743d22af93122e4662")
+    expect(subject.sign({a: 2, b: 'asdasda'})).to eq("5c350cfb3f7d67598f5d4550096814d85462ebfcac0a92f70a1dbeb9bb9ad964e2cb550f5f6d7cbcb4fd4516db1d8ae39afbc0b78293d74f774d0f97b056d0a6")
   end
 end
