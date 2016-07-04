@@ -59,14 +59,10 @@ module MercadoBitcoin
       post(params)
     end
 
-
-    # type: buy, sell
-    def trade(pair: 'btc_brl', type:, volume:, price:)
-      params = base_params('Trade')
-      params[:pair]   = pair
-      params[:type]   = type
-      params[:volume] = volume
-      params[:price]  = price
+    def place_buy_order quantity:, limit_price:
+      params = base_params('place_buy_order')
+      params[:quantity] = quantity
+      params[:limit_price] = limit_price
       post(params)
     end
 

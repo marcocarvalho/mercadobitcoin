@@ -85,6 +85,14 @@ opt_parser = OptionParser.new do |opts|
     options[:full] = v
   end
 
+  opts.on("--limit-price [PRICE]", "preço limite para compra ou venda") do |v|
+    options[:limit_price] = v
+  end
+
+  opts.on("--quantity [QUANTITY]", "quantidade de moeda digital para compra/venda") do |v|
+    options[:quantity] = v
+  end
+
   opts.on('-h', '--help') do
     puts opts
     exit(0)
