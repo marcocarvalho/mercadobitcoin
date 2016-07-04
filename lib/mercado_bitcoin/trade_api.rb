@@ -77,7 +77,7 @@ module MercadoBitcoin
 
     def cancel_order(coin_pair: BTC, order_id:)
       params = base_params('cancel_order')
-      params[:pair] = pair
+      params[:coin_pair] = coin_pair
       params[:order_id] = order_id
       post(params)
     end

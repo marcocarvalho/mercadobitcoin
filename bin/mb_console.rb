@@ -31,11 +31,12 @@ opt_parser = OptionParser.new do |opts|
         MB_COIN_PAIR (padrão: btc)
 
       Comandos (mais informações em https://www.mercadobitcoin.com.br/trade-api/):
-        list_system_messages - Método para comunicação de eventos do sistema relativos à TAPI
-        get_account_info     - Retorna dados da conta, como saldos e limites
-        get_order ORDER_ID   - Retorna os dados da ordem de acordo com o ID informado.
-        place_buy_order      -
-        place_sell_order     -
+        list_system_messages  - Método para comunicação de eventos do sistema relativos à TAPI
+        get_account_info      - Retorna dados da conta, como saldos e limites
+        get_order ORDER_ID    - Retorna os dados da ordem de acordo com o ID informado.
+        place_buy_order       -
+        place_sell_order      -
+        cancel_order ORDER_ID - cancelar orderm de compra/venda
 
   USAGE
 
@@ -176,6 +177,18 @@ class MercadoBitcoin::Console
       quantity: params[:quantity],
       limit_price: params[:limit_price]
     )
+  end
+
+  def cancel_order(*args)
+    raise ArgumentError.new("faltando ORDER_ID") if args.count < 1
+    ret = args.map do |id|
+      trade_api.cancel_order(coin_pair: params[:coin_pair], order_id: id)
+    end
+    if ret.size > 1
+      ret
+    else
+      ret[0]
+    end
   end
 
   private
