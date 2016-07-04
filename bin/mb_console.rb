@@ -16,7 +16,7 @@ def options
   @options ||= {
     key: ENV['MB_API_KEY'],
     code: ENV['MB_SECRET_KEY'],
-    coin_pair: ENV['MB_COIN_PAIR'] || 'btc',
+    coin_pair: ENV['MB_COIN_PAIR'] || MercadoBitcoin::TradeApi::BTC,
     pretty_print: true
   }
 end
@@ -34,8 +34,14 @@ opt_parser = OptionParser.new do |opts|
         list_system_messages         - Método para comunicação de eventos do sistema relativos à TAPI
         get_account_info             - Retorna dados da conta, como saldos e limites
         get_order ORDER_ID           - Retorna os dados da ordem de acordo com o ID informado.
-        place_buy_order              -
-        place_sell_order             -
+        list_orders                  - Retorna uma lista de até 200 ordens, de acordo com os filtros informados, ordenadas pela
+                                       data de última atualização. As operações executadas de cada ordem também são retornadas.
+        list_orderbook               - Retorna informações do livro de negociações (orderbook) do Mercado Bitcoin para o par de
+                                       moedas (coin_pair) informado.
+        place_buy_order              - Abre uma ordem de compra (buy ou bid) do par de moedas, quantidade de moeda digital e
+                                       preço unitário limite informados.
+        place_sell_order             - Abre uma ordem de venda (sell ou ask) do par de moedas, quantidade de moeda digital e
+                                       preço unitário limite informados.
         cancel_order ORDER_ID        - cancelar orderm de compra/venda
         get_withdrawal WITHDRAWAL_ID - Retorna os dados de uma retirada de moeda digital (BTC, LTC) ou de um saque de Real (BRL).
         withdraw_coin                - Executa a retirada de moedas digitais ou saques de Real. Assim, caso o valor de coin seja
@@ -43,23 +49,27 @@ opt_parser = OptionParser.new do |opts|
                                        realiza uma transação para o endereço de moeda digital informado em destiny.
   USAGE
 
-  opts.on("-k", "--api-key [MB_API_KEY]", "api key") do |v|
+  opts.on("-k", "--api-key MB_API_KEY", "api key") do |v|
     options[:code] = v
   end
 
-  opts.on("-s", "--secret-key [MB_SECRET_KEY]", "secret key") do |v|
+  opts.on("-s", "--secret-key MB_SECRET_KEY", "secret key") do |v|
     options[:key] = v
   end
 
-  opts.on("--coin-pair [MB_COIN_PAIR]", [:btc, :ltc, :brl], "coin_pair (btc | ltc | brl), padrão: btc") do |v|
-    options[:coin_pair] = v
+  opts.on("--coin-pair MB_COIN_PAIR", [:brlbtc, :brlltc, :brl], "coin_pair (brlbtc | brlltc | brl), padrão: brlbtc") do |v|
+    options[:coin_pair] = v.to_s.to_upper
   end
 
   opts.on("--[no-]pretty-print", "Mostra (ou não) o json de saida formatado, saída formatada é a default") do |v|
     options[:pretty_print] = v
   end
 
-  opts.on("--order-type [BUY_SELL_OR_CODE]", [:buy, :sell, 1, 2], "tipo de ordem, (BUY | SELL | 1 | 2), sem default") do |v|
+  opts.on("--[no-]debug", "debug info printed") do |v|
+    options[:debug] = v
+  end
+
+  opts.on("--order-type [BUY_SELL_OR_CODE]", ['buy', 'sell', '1', '2'], "tipo de ordem, (BUY | SELL | 1 | 2), sem default") do |v|
     options[:order_type] = v
   end
 
@@ -113,7 +123,12 @@ opt_parser = OptionParser.new do |opts|
   end
 end
 
-opt_parser.parse!
+begin
+  opt_parser.parse!
+rescue OptionParser::InvalidArgument => e
+  puts e.message
+  exit(-3)
+end
 
 if(ARGV.count < 1)
   puts opt_parser
@@ -176,24 +191,24 @@ class MercadoBitcoin::Console
 
   def place_buy_order(*args)
     trade_api.place_buy_order(
-      coin_pair: params[:coin_pair],
-      quantity: params[:quantity],
-      limit_price: params[:limit_price]
+      coin_pair: options[:coin_pair],
+      quantity: options[:quantity],
+      limit_price: options[:limit_price]
     )
   end
 
   def place_sell_order(*args)
     trade_api.place_sell_order(
-      coin_pair: params[:coin_pair],
-      quantity: params[:quantity],
-      limit_price: params[:limit_price]
+      coin_pair: options[:coin_pair],
+      quantity: options[:quantity],
+      limit_price: options[:limit_price]
     )
   end
 
   def cancel_order(*args)
     raise ArgumentError.new("faltando ORDER_ID") if args.count < 1
     ret = args.map do |id|
-      trade_api.cancel_order(coin_pair: params[:coin_pair], order_id: id)
+      trade_api.cancel_order(coin_pair: options[:coin_pair], order_id: id)
     end
     if ret.size > 1
       ret
@@ -231,7 +246,8 @@ class MercadoBitcoin::Console
   def trade_api
     @trade_api ||= MercadoBitcoin::TradeApi.new(
       key: options[:key],
-      code: options[:code]
+      code: options[:code],
+      debug: options[:debug]
     )
   end
 end

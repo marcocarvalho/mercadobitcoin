@@ -9,9 +9,10 @@ module MercadoBitcoin
 
     attr_accessor :key, :code
 
-    def initialize(key:, code:)
+    def initialize(key:, code:, debug: false)
       @key = key
       @code = code
+      @debug = debug
     end
 
     def get_account_info
@@ -97,8 +98,9 @@ module MercadoBitcoin
     end
 
     def post(params)
-      params[:tapi_nonce] = Time.new.to_i
+      params[:tapi_nonce] = (Time.new.to_f * 10).to_i
       signature = sign(params)
+      puts params.to_query_string if debug?
       result = JSON.parse(
         RestClient.post(
           base_url,
@@ -138,6 +140,10 @@ module MercadoBitcoin
     end
 
     private
+
+    def debug?
+      @debug
+    end
 
     def parse_status_list(list)
       list
