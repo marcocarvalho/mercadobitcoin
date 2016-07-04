@@ -31,13 +31,16 @@ opt_parser = OptionParser.new do |opts|
         MB_COIN_PAIR (padrão: btc)
 
       Comandos (mais informações em https://www.mercadobitcoin.com.br/trade-api/):
-        list_system_messages  - Método para comunicação de eventos do sistema relativos à TAPI
-        get_account_info      - Retorna dados da conta, como saldos e limites
-        get_order ORDER_ID    - Retorna os dados da ordem de acordo com o ID informado.
-        place_buy_order       -
-        place_sell_order      -
-        cancel_order ORDER_ID - cancelar orderm de compra/venda
-
+        list_system_messages         - Método para comunicação de eventos do sistema relativos à TAPI
+        get_account_info             - Retorna dados da conta, como saldos e limites
+        get_order ORDER_ID           - Retorna os dados da ordem de acordo com o ID informado.
+        place_buy_order              -
+        place_sell_order             -
+        cancel_order ORDER_ID        - cancelar orderm de compra/venda
+        get_withdrawal WITHDRAWAL_ID - Retorna os dados de uma retirada de moeda digital (BTC, LTC) ou de um saque de Real (BRL).
+        withdraw_coin                - Executa a retirada de moedas digitais ou saques de Real. Assim, caso o valor de coin seja
+                                       BRL, então realiza um saque para a conta bancária informada. Caso o valor seja BTC ou LTC,
+                                       realiza uma transação para o endereço de moeda digital informado em destiny.
   USAGE
 
   opts.on("-k", "--api-key [MB_API_KEY]", "api key") do |v|
@@ -48,7 +51,7 @@ opt_parser = OptionParser.new do |opts|
     options[:key] = v
   end
 
-  opts.on("--coin-pair [MB_COIN_PAIR]", [:btc, :ltc], "coin_pair (btc | ltc), padrão: btc") do |v|
+  opts.on("--coin-pair [MB_COIN_PAIR]", [:btc, :ltc, :brl], "coin_pair (btc | ltc | brl), padrão: btc") do |v|
     options[:coin_pair] = v
   end
 
@@ -94,6 +97,14 @@ opt_parser = OptionParser.new do |opts|
 
   opts.on("--quantity [QUANTITY]", "quantidade de moeda digital para compra/venda") do |v|
     options[:quantity] = v
+  end
+
+  opts.on("--destiny [DESTINY]", "Caso o valor de coin seja BRL, informar o ID de uma conta bancária já cadastrada e marcada como confiável. Caso o valor seja BTC ou LTC, informar um endereço marcado como confiável , Bitcoin ou Litecoin, respectivamente.") do |v|
+    options[:destiny] = v
+  end
+
+  opts.on("--description [DESCRIPTION]", "Texto livre para auxiliar o usuário a relacionar a retirada/saque com atividades externas.") do |v|
+    options[:description] = v
   end
 
   opts.on('-h', '--help') do
@@ -183,6 +194,18 @@ class MercadoBitcoin::Console
     raise ArgumentError.new("faltando ORDER_ID") if args.count < 1
     ret = args.map do |id|
       trade_api.cancel_order(coin_pair: params[:coin_pair], order_id: id)
+    end
+    if ret.size > 1
+      ret
+    else
+      ret[0]
+    end
+  end
+
+  def get_withdrawal(*args)
+    raise ArgumentError.new("faltando withdrawal_id") if args.count < 1
+    ret = args.map do |id|
+      trade_api.get_withdrawal(coin_pair: params[:coin_pair], withdrawal_id: id)
     end
     if ret.size > 1
       ret

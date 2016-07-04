@@ -82,6 +82,20 @@ module MercadoBitcoin
       post(params)
     end
 
+    def get_withdrawal(coin_pair: BTC, withdrawal_id:)
+      params = base_params('get_withdrawal')
+      params[:withdrawal_id] = withdrawal_id
+      post(params)
+    end
+
+    def withdraw_coin(coin_pair: BTC, quantity:, destiny:, description: nil)
+      params = base_params('withdraw_coin')
+      params[:quantity] = quantity
+      params[:destiny] = destiny
+      params[:description] = description if description
+      post(params)
+    end
+
     def post(params)
       params[:tapi_nonce] = Time.new.to_i
       signature = sign(params)
