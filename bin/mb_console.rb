@@ -45,12 +45,40 @@ opt_parser = OptionParser.new do |opts|
     options[:key] = v
   end
 
-  opts.on("--coin_pair [MB_COIN_PAIR]", [:btc, :ltc], "coin_pair (btc | ltc), padrão: btc") do |v|
+  opts.on("--coin-pair [MB_COIN_PAIR]", [:btc, :ltc], "coin_pair (btc | ltc), padrão: btc") do |v|
     options[:coin_pair] = v
   end
 
   opts.on("--[no-]pretty-print", "Mostra (ou não) o json de saida formatado, saída formatada é a default") do |v|
     options[:pretty_print] = v
+  end
+
+  opts.on("--order-type [BUY_SELL_OR_CODE]", [:buy, :sell, 1, 2], "tipo de ordem, (BUY | SELL | 1 | 2), sem default") do |v|
+    options[:order_type] = v
+  end
+
+  opts.on("--status-list [STATUS_LIST]", [:open, :cancelled, :filled, 2, 3, 4], "lista separada por virgulas: (open|2)|(cancelled|3)|(filled|4)") do |v|
+    options[:status_list] = v
+  end
+
+  opts.on("--[no-]has-fills", "Filtro para ordens com ou sem execução") do |v|
+    options[:has_fills] = v
+  end
+
+  opts.on("--from-id [FROM_ID]", "Filtro para orders a partir do ID informado (inclusive).") do |v|
+    options[:from_id] = v
+  end
+
+  opts.on("--to-id [TO_ID]", "Filtro para orders até do ID informado (inclusive).") do |v|
+    options[:to_id] = v
+  end
+
+  opts.on("--from-timestamp [FROM_TIMESTAMP]", "Filtro para orders criadas a partir do timestamp informado (inclusive).") do |v|
+    options[:from_timestamp] = v
+  end
+
+  opts.on("--to-timestamp [TO_TIMESTAMP]", "Filtro para orders criadas até do timestamp informado (inclusive).") do |v|
+    options[:to_timestamp] = v
   end
 
   opts.on('-h', '--help') do
@@ -101,6 +129,18 @@ class MercadoBitcoin::Console
     end
   end
 
+  def list_orders(*args)
+    trade_api.list_orders(
+      coin_pair: options[:coin_pair],
+      order_type: options[:order_type],
+      status_list: options[:status_list],
+      has_fills: options[:has_fills],
+      from_id: options[:from_id],
+      to_id: options[:to_id],
+      from_timestamp: options[:from_timestamp],
+      to_timestamp: options[:to_timestamp])
+  end
+
   private
 
   def print(value)
@@ -131,4 +171,7 @@ rescue ArgumentError => e
   puts "\n\nFaltando argumentos para o comando #{command}\n\n"
   puts opt_parser
   exit(-2)
+rescue RestClient::ServiceUnavailable => e
+  puts "Server returned 503 - Service Unavailable"
+  exit(-503)
 end

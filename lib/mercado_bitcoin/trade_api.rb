@@ -31,6 +31,28 @@ module MercadoBitcoin
       post(params)
     end
 
+    def list_orders(
+      coin_pair: BTC,
+      order_type: nil,
+      status_list: nil,
+      has_fills: nil, # com ou sem execução
+      from_id: nil,
+      to_id: nil,
+      from_timestamp: nil,
+      to_timestamp: nil)
+      params = base_params('list_orders')
+      params[:coin_pair] = coin_pair
+      params[:order_type] = parse_order_type(order_type) if order_type
+      params[:status_list] = parse_status_list(status_list) if status_list
+      params[:has_fills] = has_fills if has_fills
+      params[:from_id] = from_id if from_id
+      params[:to_id] = to_id if to_id
+      params[:from_timestamp] = from_timestamp if from_timestamp
+      params[:to_timestamp] = to_timestamp if to_timestamp
+      post(params)
+    end
+
+
     # type: buy, sell
     def trade(pair: 'btc_brl', type:, volume:, price:)
       params = base_params('Trade')
@@ -45,20 +67,6 @@ module MercadoBitcoin
       params = base_params('CancelOrder')
       params[:pair] = pair
       params[:order_id] = order_id
-      post(params)
-    end
-
-    # status: active, canceled, completed
-    # since and end: in Unix timestamp: Time.new.to_i
-    def order_list(pair: 'btc_brl', type: nil, status: nil, from_id: nil, end_id: nil, since: nil, _end: nil)
-      params = base_params('OrderList')
-      params[:pair] = pair
-      params[:type] = type if type
-      params[:status] = status if status
-      params[:from_id] = from_id if from_id
-      params[:end_id] = end_id if end_id
-      params[:since] = since if since
-      params[:end] = _end if _end
       post(params)
     end
 
@@ -101,6 +109,20 @@ module MercadoBitcoin
       string_or_hash = path + '?' + string_or_hash.to_query_string if string_or_hash.is_a?(Hash)
       hmac = OpenSSL::HMAC.new(code, OpenSSL::Digest.new('sha512'))
       hmac.update(string_or_hash).to_s
+    end
+
+    private
+
+    def parse_status_list(list)
+      list
+        .gsub(/(cancelled|open|filled)/i, { 'cancelled' => 3, 'open' => 2, 'filled' => 4 })
+        .split(',')
+        .to_json
+    end
+
+    def parse_order_type(type)
+      type
+        .gsub(/(buy|sell)/i, { 'buy' => 1, 'sell' => 2 })
     end
   end
 end
