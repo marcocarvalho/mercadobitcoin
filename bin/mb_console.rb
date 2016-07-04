@@ -81,6 +81,10 @@ opt_parser = OptionParser.new do |opts|
     options[:to_timestamp] = v
   end
 
+  opts.on("--[no-]full", "Indica quantidades de ordens retornadas no livro.") do |v|
+    options[:full] = v
+  end
+
   opts.on('-h', '--help') do
     puts opts
     exit(0)
@@ -139,6 +143,13 @@ class MercadoBitcoin::Console
       to_id: options[:to_id],
       from_timestamp: options[:from_timestamp],
       to_timestamp: options[:to_timestamp])
+  end
+
+  def list_orderbook(*args)
+    trade_api.list_orderbook(
+      coin_pair: options[:coin_pair],
+      full: options[:full]
+    )
   end
 
   private

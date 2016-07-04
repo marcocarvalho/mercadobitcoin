@@ -44,11 +44,18 @@ module MercadoBitcoin
       params[:coin_pair] = coin_pair
       params[:order_type] = parse_order_type(order_type) if order_type
       params[:status_list] = parse_status_list(status_list) if status_list
-      params[:has_fills] = has_fills if has_fills
+      params[:has_fills] = has_fills if has_fills != nil
       params[:from_id] = from_id if from_id
       params[:to_id] = to_id if to_id
       params[:from_timestamp] = from_timestamp if from_timestamp
       params[:to_timestamp] = to_timestamp if to_timestamp
+      post(params)
+    end
+
+    def list_orderbook(coin_pair: BTC, full: nil)
+      params = base_params('list_orderbook')
+      params[:coin_pair] = coin_pair
+      params[:full] = full if full != nil
       post(params)
     end
 
