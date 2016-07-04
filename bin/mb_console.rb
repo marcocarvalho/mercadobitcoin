@@ -164,6 +164,7 @@ class MercadoBitcoin::Console
 
   def place_buy_order(*args)
     trade_api.place_buy_order(
+      coin_pair: params[:coin_pair],
       quantity: params[:quantity],
       limit_price: params[:limit_price]
     )
@@ -171,6 +172,7 @@ class MercadoBitcoin::Console
 
   def place_sell_order(*args)
     trade_api.place_sell_order(
+      coin_pair: params[:coin_pair],
       quantity: params[:quantity],
       limit_price: params[:limit_price]
     )

@@ -59,22 +59,24 @@ module MercadoBitcoin
       post(params)
     end
 
-    def place_buy_order quantity:, limit_price:
+    def place_buy_order coin_pair: BTC, quantity:, limit_price:
       params = base_params('place_buy_order')
+      params[:coin_pair] = coin_pair
       params[:quantity] = quantity
       params[:limit_price] = limit_price
       post(params)
     end
 
-    def place_sell_order quantity:, limit_price:
+    def place_sell_order coin_pair: BTC, quantity:, limit_price:
       params = base_params('place_sell_order')
+      params[:coin_pair] = coin_pair
       params[:quantity] = quantity
       params[:limit_price] = limit_price
       post(params)
     end
 
-    def cancel_order(pair: 'btc_brl', order_id:)
-      params = base_params('CancelOrder')
+    def cancel_order(coin_pair: BTC, order_id:)
+      params = base_params('cancel_order')
       params[:pair] = pair
       params[:order_id] = order_id
       post(params)
