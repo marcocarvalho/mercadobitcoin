@@ -66,6 +66,13 @@ module MercadoBitcoin
       post(params)
     end
 
+    def place_sell_order quantity:, limit_price:
+      params = base_params('place_sell_order')
+      params[:quantity] = quantity
+      params[:limit_price] = limit_price
+      post(params)
+    end
+
     def cancel_order(pair: 'btc_brl', order_id:)
       params = base_params('CancelOrder')
       params[:pair] = pair

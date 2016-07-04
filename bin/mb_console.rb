@@ -34,6 +34,8 @@ opt_parser = OptionParser.new do |opts|
         list_system_messages - Método para comunicação de eventos do sistema relativos à TAPI
         get_account_info     - Retorna dados da conta, como saldos e limites
         get_order ORDER_ID   - Retorna os dados da ordem de acordo com o ID informado.
+        place_buy_order      -
+        place_sell_order     -
 
   USAGE
 
@@ -157,6 +159,20 @@ class MercadoBitcoin::Console
     trade_api.list_orderbook(
       coin_pair: options[:coin_pair],
       full: options[:full]
+    )
+  end
+
+  def place_buy_order(*args)
+    trade_api.place_buy_order(
+      quantity: params[:quantity],
+      limit_price: params[:limit_price]
+    )
+  end
+
+  def place_sell_order(*args)
+    trade_api.place_sell_order(
+      quantity: params[:quantity],
+      limit_price: params[:limit_price]
     )
   end
 
