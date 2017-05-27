@@ -13,6 +13,7 @@ module MercadoBitcoin
       @key = key
       @code = code
       @debug = debug
+      @retries = 0
     end
 
     def get_account_info
@@ -97,8 +98,18 @@ module MercadoBitcoin
       post(params)
     end
 
+    attr_writer :last_tapi_nonce
+
+    def last_tapi_nonce
+      @last_tapi_nonce ||= (Time.new.to_f * 10).to_i
+    end
+
+    def tapi_nonce
+      self.last_tapi_nonce += 1
+    end
+
     def post(params)
-      params[:tapi_nonce] = (Time.new.to_f * 10).to_i
+      params[:tapi_nonce] = tapi_nonce
       signature = sign(params)
       puts params.to_query_string if debug?
       result = JSON.parse(
@@ -108,6 +119,43 @@ module MercadoBitcoin
           header(signature)
         )
       )
+      deal_with_errors(result)
+    rescue MercadoBitcoin::TonceAlreadyUsed
+      retry
+    end
+
+    def deal_with_errors(result)
+      if result['status_code'] == 100
+        @retries = 0
+        return result
+      end
+
+      @retries += 1
+      if @retries >= 6
+        @retries = 0
+        result[:_mb_gem] = { code: 1, retries: @retries, error: 'maximum retries reached' }
+        return result
+      end
+
+      return deal_with_tapi_nonce(result) if result['status_code'] == 203
+
+      deal_with_errors_not_treated(result)
+    end
+
+    def deal_with_tapi_nonce(result)
+      if result['error_message'] =~ /utilizado: (\d+)/
+        self.last_tapi_nonce = $1.to_i
+        raise MercadoBitcoin::TonceAlreadyUsed.new
+      else
+        result[:_mb_gem] = { code: 2, retries: @retries, error: 'last tapi_nonce not found.' }
+        result
+      end
+    end
+
+    def deal_with_errors_not_treated(result)
+      result[:_mb_gem] = { code: 0, retries: @retries, error: 'not treated' }
+      @retries = 0
+      result
     end
 
     def base_path

@@ -12,4 +12,17 @@ RSpec.describe MercadoBitcoin::TradeApi, type: :service do
   it 'sign a hash' do
     expect(subject.sign({a: 2, b: 'asdasda'})).to eq("5c350cfb3f7d67598f5d4550096814d85462ebfcac0a92f70a1dbeb9bb9ad964e2cb550f5f6d7cbcb4fd4516db1d8ae39afbc0b78293d74f774d0f97b056d0a6")
   end
+
+  it '#get_account_info tapi_nonce error' do
+    subject.last_tapi_nonce = 12344
+    stub_request(:post, "https://www.mercadobitcoin.net/tapi/v3/")
+      .with(body: {"tapi_method"=>"get_account_info", "tapi_nonce"=>"12345"})
+      .to_return(status: 200, body: {"status_code"=>203,"error_message"=>"Valor do *tapi_nonce* invalido, valor deve ser maior do que o ultimo utilizado: 123456.","server_unix_timestamp"=>"1495897539"}.to_json)
+
+    stub_request(:post, "https://www.mercadobitcoin.net/tapi/v3/")
+      .with(body: {"tapi_method"=>"get_account_info", "tapi_nonce"=>"123457"})
+      .to_return(status: 200, body: {"status_code"=>100,"response_data"=>{"dados" => "batutas"}}.to_json)
+
+    expect(subject.get_account_info).to eq({"status_code"=>100, "response_data"=>{"dados"=>"batutas"}})
+  end
 end
