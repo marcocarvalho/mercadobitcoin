@@ -197,6 +197,7 @@ module MercadoBitcoin
       list
         .gsub(/(cancelled|open|filled)/i, { 'cancelled' => 3, 'open' => 2, 'filled' => 4 })
         .split(',')
+        .map { |i| i.to_i }
         .to_json
     end
 

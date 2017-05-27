@@ -17,7 +17,8 @@ def options
     key: ENV['MB_API_KEY'],
     code: ENV['MB_SECRET_KEY'],
     coin_pair: ENV['MB_COIN_PAIR'] || MercadoBitcoin::TradeApi::BTC,
-    pretty_print: true
+    pretty_print: true,
+    status_list: '2'
   }
 end
 
@@ -73,7 +74,7 @@ opt_parser = OptionParser.new do |opts|
     options[:order_type] = v
   end
 
-  opts.on("--status-list [STATUS_LIST]", [:open, :cancelled, :filled, 2, 3, 4], "lista separada por virgulas: (open|2)|(cancelled|3)|(filled|4)") do |v|
+  opts.on("--status-list [STATUS_LIST]", ['open', 'cancelled', 'filled', 2, 3, 4], "lista separada por virgulas: (open|2)|(cancelled|3)|(filled|4) default: open") do |v|
     options[:status_list] = v
   end
 
