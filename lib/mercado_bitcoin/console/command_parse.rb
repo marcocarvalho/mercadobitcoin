@@ -15,6 +15,7 @@ class MercadoBitcoin::Console::CommandParse
     parser.add_command(CmdParse::VersionCommand.new)
     parser.add_command(MercadoBitcoin::Console::Commands::Account.new(console))
     parser.add_command(MercadoBitcoin::Console::Commands::Order.new(console))
+    parser.add_command(MercadoBitcoin::Console::Commands::System.new(console))
     global_options
     parser.parse
   end
