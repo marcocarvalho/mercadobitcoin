@@ -1,7 +1,4 @@
 class MercadoBitcoin::Console
-  autoload :Commands, 'mercado_bitcoin/console/commands'
-  autoload :CommandParse, 'mercado_bitcoin/console/command_parse'
-
   attr_accessor :options
 
   def initialize(opts = {})
@@ -131,3 +128,6 @@ class MercadoBitcoin::Console
     )
   end
 end
+
+require 'mercado_bitcoin/console/commands'
+require 'mercado_bitcoin/console/command_parse'

@@ -4,6 +4,7 @@ class MercadoBitcoin::Console::Commands::Order < MercadoBitcoin::Console::Comman
   def after_initialize
     add_command(List.new(console))
     add_command(Get.new(console))
+    add_command(Cancel.new(console))
   end
 
   class Cancel < MercadoBitcoin::Console::Commands::BaseNoTakeCommand

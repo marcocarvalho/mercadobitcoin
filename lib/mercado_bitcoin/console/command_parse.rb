@@ -1,5 +1,3 @@
-require 'cmdparse'
-
 class MercadoBitcoin::Console::CommandParse
   attr_accessor :console
 
@@ -13,9 +11,9 @@ class MercadoBitcoin::Console::CommandParse
     @console = console
     parser.add_command(CmdParse::HelpCommand.new, default: true)
     parser.add_command(CmdParse::VersionCommand.new)
-    parser.add_command(MercadoBitcoin::Console::Commands::Account.new(console))
-    parser.add_command(MercadoBitcoin::Console::Commands::Order.new(console))
-    parser.add_command(MercadoBitcoin::Console::Commands::System.new(console))
+    MercadoBitcoin::Console::Commands::Base.command_classes.each do |command|
+      parser.add_command(command.new(console))
+    end
     global_options
     parser.parse
   end

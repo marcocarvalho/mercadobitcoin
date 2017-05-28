@@ -1,5 +1,13 @@
 class MercadoBitcoin::Console::Commands::Base < CmdParse::Command
   class << self
+    def inherited(klass)
+      (@klasses ||= []) << klass
+    end
+
+    def command_classes
+      @command_classes ||= @klasses.select { |klass| !(klass.to_s =~ /Base/)  }
+    end
+
     def short_desc(*args)
       if args.count > 0
         @short_desc = args.first
