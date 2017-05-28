@@ -1,12 +1,29 @@
 class MercadoBitcoin::Console
+  autoload :Commands, 'mercado_bitcoin/console/commands'
+  autoload :CommandParse, 'mercado_bitcoin/console/command_parse'
+
   attr_accessor :options
 
-  # Laizy way to check parameters :)
-  def initialize(key:, code:, coin_pair:, **opts)
-    @options = opts || {}
-    @options[:key]          = key
-    @options[:code]         = code
-    @options[:coin_pair]    = coin_pair
+  def initialize(opts = {})
+    @options = default_options.merge(opts)
+  end
+
+  def run!
+    option_parser.parse(self)
+  end
+
+  def option_parser
+    @option_parser ||= MercadoBitcoin::Console::CommandParse.new
+  end
+
+  def default_options
+    @options ||= {
+      key: ENV['MB_API_KEY'],
+      code: ENV['MB_SECRET_KEY'],
+      coin_pair: ENV['MB_COIN_PAIR'] || MercadoBitcoin::TradeApi::BTC,
+      pretty_print: true,
+      status_list: '2'
+    }
   end
 
   def exec(command, opts)
