@@ -27,6 +27,13 @@ class MercadoBitcoin::Console
     print send(command, *opts)
   end
 
+  def ticker(*args)
+    MercadoBitcoin::Ticker
+      .new(options[:coin_pair] == MercadoBitcoin::TradeApi::BTC ? :bitcoin : :litecoin)
+      .tap { |t| t.fetch }
+      .parsed
+  end
+
   def list_system_messages(*args)
     trade_api.list_system_messages
   end

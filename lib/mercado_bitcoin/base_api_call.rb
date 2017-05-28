@@ -1,6 +1,6 @@
 module MercadoBitcoin
     class BaseApiCall
-    attr_accessor :coin, :parser, :rest_client, :parser_error_class
+    attr_accessor :coin, :parser, :rest_client, :parser_error_class, :parsed
     def initialize(coin = :bitcoin, opts = {})
       @coin               = coin.to_s.downcase.to_sym
       raise MercadoBitcoin::CoinTypeError.new("bitcoin or litecoin expected #{coin} received") unless valid_coin?
@@ -14,7 +14,7 @@ module MercadoBitcoin
     end
 
     def fetch
-      parsed = parse(get(url))
+      @parsed = parse(get(url))
       model.new(parsed)
     end
 
@@ -31,7 +31,7 @@ module MercadoBitcoin
     end
 
     def bitcoin?
-      coin == :bitcoin 
+      coin == :bitcoin
     end
 
     def litecoin?
