@@ -4,4 +4,5 @@ module MercadoBitcoin
   class CoinTypeError < Error; end
   class TonceDesyncError < Error; end
   class TonceAlreadyUsed < Error; end
+  class MissingParameter < Error; end
 end

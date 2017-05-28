@@ -47,6 +47,7 @@ class MercadoBitcoin::Console::CommandParse
       init.main_options.program_name = "mb_console"
       init.main_options.version = MercadoBitcoin::VERSION
       init.main_options.banner = "MercadoBitcoin Console"
+      init.help_line_width = 160
     end
   end
 end

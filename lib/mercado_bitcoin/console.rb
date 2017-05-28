@@ -106,6 +106,12 @@ class MercadoBitcoin::Console
     end
   end
 
+  def withdrawal_coin(*args)
+    prms = params.dup
+    prms = params.merge(args.first) if args.count == 1 and args.first.is_a?(Hash)
+    trade_api.withdrawal_coin(**prms)
+  end
+
   private
 
   def print(value)

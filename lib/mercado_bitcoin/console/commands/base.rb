@@ -5,7 +5,9 @@ class MercadoBitcoin::Console::Commands::Base < CmdParse::Command
     end
 
     def command_classes
-      @command_classes ||= @klasses.select { |klass| !(klass.to_s =~ /Base/)  }
+      @command_classes ||= @klasses.select do |klass|
+        !(klass.to_s =~ /Base/) && klass.to_s.split('::').count == 4
+      end
     end
 
     def short_desc(*args)

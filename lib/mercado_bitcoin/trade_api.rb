@@ -84,17 +84,29 @@ module MercadoBitcoin
       post(params)
     end
 
-    def get_withdrawal(coin_pair: BTC, withdrawal_id:)
+    def get_withdrawal(coin: 'BTC', withdrawal_id:)
       params = base_params('get_withdrawal')
+      params[:coin] = coin.upcase
       params[:withdrawal_id] = withdrawal_id
       post(params)
     end
 
-    def withdraw_coin(coin_pair: BTC, quantity:, destiny:, description: nil)
+    def withdraw_coin(coin: 'BTC', quantity:, description: nil, **opts)
       params = base_params('withdraw_coin')
       params[:quantity] = quantity
-      params[:destiny] = destiny
+      params[:coin] = coin.upcase
       params[:description] = description if description
+
+      if params[:coin] == 'BRL'
+        params[:account_ref] = opts[:account_ref] || (raise MissingParameter.new('account_ref is missing for coin BRL'))
+      else
+        params[:address] = opts[:address]
+        if params[:coin] == 'BTC'
+          params[:tx_fee]         = opts[:tx_fee] || 0.00005
+          params[:tx_aggregate]   = opts[:tx_aggregate]   unless opts[:tx_aggregate].nil?
+          params[:via_blockchain] = opts[:via_blockchain] unless opts[:via_blockchain].nil?
+        end
+      end
       post(params)
     end
 
